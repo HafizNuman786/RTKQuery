@@ -8,93 +8,120 @@ import {
   Link,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import {useGetUsersQuery} from "./api/usersapi";
+import { useGetUsersQuery } from "./api/usersapi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setUserEmail } from "./api/userSlice";
+
+// LoginPage component
 const LoginPage = () => {
+  // Redux hooks
   const dispatch = useDispatch();
+
+  // Local state for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Local state for email and password errors
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  
+
+  // Next.js router hook
   const router = useRouter();
-// getting users-data from Api using RTK
-  const {isLoading,isError, isSuccess, data,error}= useGetUsersQuery();
+
+  // Query hook for fetching users
+  const { isLoading, isError, isSuccess, data, error } = useGetUsersQuery();
+
+  // Function to validate email format
   const validateEmail = (inputEmail) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(inputEmail);
   };
 
-  const handleLogin = () => {
-    
-    if (email.trim() === "" || !validateEmail(email)) {
-      setEmailError(true);
-      return;
-    }
+  // Toast functions
+  const successful = () => toast("Login successful!");
+  const failed = () => toast.error("Please check your credentials.");
 
-    if (password.trim().length < 6) {
+  // Function to handle login
+  const handleLogin = () => {
+    // Basic form validation
+    if (email.trim() === "" || !validateEmail(email) || password.trim().length < 6) {
+      setEmailError(true);
       setPasswordError(true);
       return;
     }
-   
+
+    // Check loading state
     if (isLoading) {
-      return <div>Loading...</div>;
+      return; // Handle loading state
     }
-    
+
+    // Check for errors during data fetching
     if (isError) {
-      return <div>Error: {error.message}</div>;
+      toast.error(`Error: ${error.message}`); // Handle error state
+      return;
     }
-    
+
+    // Check if data fetching is successful
     if (isSuccess) {
+      // Find user with the provided email
       const userWithEmail = data.find((user) => user.email === email);
+      
+      // Dispatch user email to Redux store
+      dispatch(setUserEmail(email));
+
+      // If user with email not found
       if (!userWithEmail) {
-        return <div>User with this email not found</div>;
+        toast.error("User with this email not found"); // Handle user not found
+        return;
       }
-      else{
-        const userExists = data.find((user) => user.password === password);
-         if(userExists){ 
-           dispatch(setUserEmail(email));
 
-          setEmail(""); 
-          setPassword("");
-          setEmailError(false);
-          setPasswordError(false);
-          router.push("/notes");
-         }
-         else{
-          return <div>please enter correct password</div>;
-         }
+      // Validate password
+      const isValidPassword = userWithEmail.password === password;
+
+      if (isValidPassword) {
+        // Reset form, clear errors, navigate to notes page, and show success toast
+        setEmail("");
+        setPassword("");
+        setEmailError(false);
+        setPasswordError(false);
+        router.push("/notes");
+        successful(); // Show success toast
+      } else {
+        setPasswordError(true);
+        failed(); // Show failed login toast
       }
-     
     }
-
-    // if login successful
-    
-
   };
 
+  // Render the component
   return (
     <Grid
+      sx={{
+        height: '100vh',
+        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+      }}
       container
       justifyContent="center"
       alignItems="center"
-      sx={{ height: "100vh" }}
     >
+      <ToastContainer />
       <Paper
         elevation={5}
-        style={{ padding: "20px", width: 500, textAlign: "center" }}
+        style={{ padding: "20px", width: 600, textAlign: "center" }}
       >
-        <Typography variant="h5">Welcome to My Application</Typography>
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          Login
+        <Typography variant="h6" sx={{ mt: 2, color: "#2196F3" }}>
+          RTK APP Login
         </Typography>
+        {/* Textfield for Email */}
         <TextField
+          sx={{ width: "70%" }}
           required
           label="Email"
-          variant="filled"
+          variant="outlined"
           margin="normal"
-          fullWidth
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -103,13 +130,14 @@ const LoginPage = () => {
           error={emailError}
           helperText={emailError ? "Enter a valid email address" : ""}
         />
+        {/* Textfield for Password */}
         <TextField
+          sx={{ width: "70%" }}
           required
           label="Password"
           type="password"
-          variant="filled"
+          variant="outlined"
           margin="normal"
-          fullWidth
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
@@ -120,15 +148,17 @@ const LoginPage = () => {
             passwordError ? "Password must be at least 6 characters" : ""
           }
         />
+        {/* Login Button */}
         <Button
           variant="contained"
           color="primary"
           onClick={handleLogin}
-          style={{ marginTop: "20px" }}
+          sx={{ marginTop: "20px", width: "50%" }}
         >
           Login
         </Button>
-        <Typography variant="body2" sx={{ marginTop: "10px" }}>
+        {/* Signup Link */}
+        <Typography variant="body1" sx={{ marginTop: "10px" }}>
           Don't have an account? <Link href="/signup">Sign up</Link>
         </Typography>
       </Paper>

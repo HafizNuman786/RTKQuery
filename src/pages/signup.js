@@ -1,3 +1,5 @@
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useState } from "react";
 import {
   Grid,
@@ -8,135 +10,188 @@ import {
   Link,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { useCreateUserMutation } from "./api/usersapi"; 
+import { useCreateUserMutation } from "./api/usersapi";
+import { useDispatch } from 'react-redux';
+import { setUserEmail } from "./api/userSlice";
 
+// Signup component
 const Signup = () => {
+  // Redux hooks
+  const dispatch = useDispatch();
+  
+  // Next.js router hook
   const router = useRouter();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  // Form state and error handling
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [createUser]= useCreateUserMutation();
+
+  // API hooks
+  const [createUser] = useCreateUserMutation();
+
+  // Toast functions
+  const successful = () => toast("SignUp Successful!");
+  const failed = () => toast.error("Please check your credentials.");
+
+  // Validation function for email format
   const validateEmail = (inputEmail) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(inputEmail);
   };
 
-  const handleSignup = async() => {
-    if (firstName.trim() === "") {
-      setFirstNameError(true);
-      return;
-    }
-
-    if (lastName.trim() === "") {
-      setLastNameError(true);
-      return;
-    }
-
-    if (email.trim() === "" || !validateEmail(email)) {
-      setEmailError(true);
-      return;
-    }
-
-    if (password.trim().length < 6) {
-      setPasswordError(true);
-      return;
-    }
-
-    const newObj = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-    };
-
-    await createUser(newObj);
-    
-    console.log("newObj>>", newObj)
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
+  // Reset form and error states
+  const resetForm = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    });
     setFirstNameError(false);
     setLastNameError(false);
     setEmailError(false);
     setPasswordError(false);
-    
-    console.log("Signup successful!");
-    router.push("/notes");
   };
 
+  // Handle the signup process
+  const handleSignup = async () => {
+    // Your existing form validation logic
+    if (formData.firstName.trim() === "") {
+      setFirstNameError(true);
+      return;
+    }
+
+    if (formData.lastName.trim() === "") {
+      setLastNameError(true);
+      return;
+    }
+
+    if (formData.email.trim() === "" || !validateEmail(formData.email)) {
+      setEmailError(true);
+      return;
+    }
+
+    if (formData.password.trim().length < 6) {
+      setPasswordError(true);
+      return;
+    }
+
+    try {
+      // API call to create a user
+      await createUser(formData);
+
+      // Dispatch the user email to Redux store
+      dispatch(setUserEmail(formData.email));
+
+      // Show success toast, reset form, and navigate to the notes page
+      successful();
+      resetForm();
+      console.log("Signup successful!");
+      router.push("/notes");
+    } catch (error) {
+      // Show error toast and log the error
+      failed();
+      console.error("Signup failed:", error);
+      // Handle the error 
+    }
+  };
+
+  // Render the component
   return (
     <Grid
       container
       justifyContent="center"
       alignItems="center"
-      sx={{ height: "97vh" }}
+      sx={{
+        height: '97vh',
+        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+      }}
     >
+      <ToastContainer />
       <Paper
         elevation={5}
         style={{ padding: "20px", width: 500, textAlign: "center" }}
       >
-        <Typography variant="h5">Welcome to My Application</Typography>
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          Sign Up
+        <Typography variant="h6" sx={{ mt: 2, color: "#2196F3" }}>
+          RTK APP Sign Up
         </Typography>
+        {/* Textfield for First Name */}
         <TextField
           required
           label="First Name"
-          variant="filled"
+          variant="outlined"
           margin="normal"
           fullWidth
-          value={firstName}
+          value={formData.firstName}
           onChange={(e) => {
-            setFirstName(e.target.value);
-            setFirstNameError(false); 
+            setFormData((prevData) => ({
+              ...prevData,
+              firstName: e.target.value,
+            }));
+            setFirstNameError(false);
           }}
           error={firstNameError}
           helperText={firstNameError ? "First Name is required" : ""}
         />
+        {/* Textfield for Last Name */}
         <TextField
           required
           label="Last Name"
-          variant="filled"
+          variant="outlined"
           margin="normal"
           fullWidth
-          value={lastName}
+          value={formData.lastName}
           onChange={(e) => {
-            setLastName(e.target.value);
+            setFormData((prevData) => ({
+              ...prevData,
+              lastName: e.target.value,
+            }));
             setLastNameError(false);
           }}
           error={lastNameError}
           helperText={lastNameError ? "Last Name is required" : ""}
         />
+        {/* Textfield for Email */}
         <TextField
           required
           label="Email"
-          variant="filled"
+          variant="outlined"
           margin="normal"
           fullWidth
-          value={email}
+          value={formData.email}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setFormData((prevData) => ({
+              ...prevData,
+              email: e.target.value,
+            }));
             setEmailError(false);
           }}
           error={emailError}
           helperText={emailError ? "Enter a valid email address" : ""}
         />
+        {/* Textfield for Password */}
         <TextField
           required
           label="Password"
           type="password"
-          variant="filled"
+          variant="outlined"
           margin="normal"
           fullWidth
-          value={password}
+          value={formData.password}
           onChange={(e) => {
-            setPassword(e.target.value);
+            setFormData((prevData) => ({
+              ...prevData,
+              password: e.target.value,
+            }));
             setPasswordError(false);
           }}
           error={passwordError}
@@ -144,14 +199,16 @@ const Signup = () => {
             passwordError ? "Password must be at least 6 characters" : ""
           }
         />
+        {/* Signup Button */}
         <Button
           variant="contained"
           color="primary"
           onClick={handleSignup}
-          style={{ marginTop: "20px" }}
+          style={{ marginTop: "20px", width: "50%" }}
         >
           Signup
         </Button>
+        {/* Login Link */}
         <Typography variant="body2" sx={{ marginTop: "10px" }}>
           Already have an account? <Link href="/">Login</Link>
         </Typography>
