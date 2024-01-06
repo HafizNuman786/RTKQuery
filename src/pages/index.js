@@ -27,6 +27,9 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
+  // State to track whether the notification has been shown
+  const [notificationShown, setNotificationShown] = useState(false);
+
   // Next.js router hook
   const router = useRouter();
 
@@ -67,7 +70,7 @@ const LoginPage = () => {
     if (isSuccess) {
       // Find user with the provided email
       const userWithEmail = data.find((user) => user.email === email);
-      
+
       // Dispatch user email to Redux store
       dispatch(setUserEmail(email));
 
@@ -86,8 +89,14 @@ const LoginPage = () => {
         setPassword("");
         setEmailError(false);
         setPasswordError(false);
+
+        // Show toast only if it hasn't been shown before
+        if (!notificationShown) {
+          successful(); // Show success toast
+          setNotificationShown(true);
+        }
+
         router.push("/notes");
-        successful(); // Show success toast
       } else {
         setPasswordError(true);
         failed(); // Show failed login toast
@@ -99,8 +108,10 @@ const LoginPage = () => {
   return (
     <Grid
       sx={{
-        height: '100vh',
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        height: '95vh',
+        backgroundImage: 'url("/sticky.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
       }}
       container
@@ -112,8 +123,11 @@ const LoginPage = () => {
         elevation={5}
         style={{ padding: "20px", width: 600, textAlign: "center" }}
       >
-        <Typography variant="h6" sx={{ mt: 2, color: "#2196F3" }}>
-          RTK APP Login
+         <Typography variant="h4" sx={{ mt: 2, color: "#e74c3c", fontWeight:"bold"}}>
+          STICKY
+        </Typography>
+        <Typography variant="h6" sx={{ mt: 2, color: "#e74c3c" }}>
+           LOGIN
         </Typography>
         {/* Textfield for Email */}
         <TextField
@@ -158,7 +172,7 @@ const LoginPage = () => {
           Login
         </Button>
         {/* Signup Link */}
-        <Typography variant="body1" sx={{ marginTop: "10px" }}>
+        <Typography variant="body1" sx={{ marginTop: "10px",color:"#e74c3c" }}>
           Don't have an account? <Link href="/signup">Sign up</Link>
         </Typography>
       </Paper>

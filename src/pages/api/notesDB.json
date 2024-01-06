@@ -69,6 +69,13 @@
       "email": "haiderijaz143@gmail.com",
       "password": "99999999999999999",
       "id": 10
+    },
+    {
+      "firstName": "Zaman",
+      "lastName": "Arshad",
+      "email": "asdfg@gmail.com",
+      "password": "11226666666666666",
+      "id": 11
     }
   ],
   "notes": [
@@ -101,12 +108,6 @@
       "email": "bob123@gmai.com",
       "heading": "this is new heading",
       "description": "this is another desciprot"
-    },
-    {
-      "id": "lr1x75c26s4byjotssk",
-      "email": "hafiznumanarshad85@gmail.com",
-      "heading": "aaaaa",
-      "description": "aaaa"
     }
   ]
 }

@@ -1,5 +1,3 @@
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import React, { useState } from "react";
 import {
   Grid,
@@ -11,6 +9,8 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useCreateUserMutation } from "./api/usersapi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setUserEmail } from "./api/userSlice";
 
@@ -18,7 +18,7 @@ import { setUserEmail } from "./api/userSlice";
 const Signup = () => {
   // Redux hooks
   const dispatch = useDispatch();
-  
+
   // Next.js router hook
   const router = useRouter();
 
@@ -36,6 +36,9 @@ const Signup = () => {
 
   // API hooks
   const [createUser] = useCreateUserMutation();
+
+  // State to track whether the success notification has been shown
+  const [notificationShown, setNotificationShown] = useState(false);
 
   // Toast functions
   const successful = () => toast("SignUp Successful!");
@@ -91,10 +94,14 @@ const Signup = () => {
       // Dispatch the user email to Redux store
       dispatch(setUserEmail(formData.email));
 
-      // Show success toast, reset form, and navigate to the notes page
-      successful();
+      // Show success toast only if it hasn't been shown before
+      if (!notificationShown) {
+        successful();
+        setNotificationShown(true);
+      }
+
+      // Reset form and navigate to the notes page
       resetForm();
-      console.log("Signup successful!");
       router.push("/notes");
     } catch (error) {
       // Show error toast and log the error
@@ -112,7 +119,9 @@ const Signup = () => {
       alignItems="center"
       sx={{
         height: '97vh',
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        backgroundImage: 'url("/sticky.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
       }}
     >
@@ -121,8 +130,11 @@ const Signup = () => {
         elevation={5}
         style={{ padding: "20px", width: 500, textAlign: "center" }}
       >
-        <Typography variant="h6" sx={{ mt: 2, color: "#2196F3" }}>
-          RTK APP Sign Up
+        <Typography variant="h4" sx={{ mt: 2, color: "#e74c3c", fontWeight:"bold"}}>
+          STICKY
+        </Typography>
+        <Typography variant="h6" sx={{ mt: 2, color: "#e74c3c" }}>
+           Sign Up
         </Typography>
         {/* Textfield for First Name */}
         <TextField

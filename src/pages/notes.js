@@ -12,6 +12,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useCreateNoteMutation, useDeleteNoteMutation, useGetNoteByIdQuery, useGetNotesQuery, useUpdateNoteMutation } from './api/notesApi';
 import { selectUserEmail } from './api/userSlice';
+import Router from 'next/router';
 const Notes = () => {
 
   const [createNote] = useCreateNoteMutation();
@@ -69,6 +70,11 @@ const Notes = () => {
     await deleteNote(id);
   };
 
+  
+  const handleLogout = () => {
+
+    Router.push("/");
+  }
 
 
 
@@ -77,18 +83,17 @@ const Notes = () => {
       sx={{
         width: '100vw',
         height: '100vh',
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+        backgroundImage: 'url("/ntsticky.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         padding: '20px',
-        '@media (max-width: 600px)': {
-          flexDirection: 'column',
-        },
+
       }}
     >
 
       <Grid item xs={12} md={6} >
         <Paper sx={{ textAlign: "center", width: "100%", marginLeft: "20px" }}>
-          <Typography sx={{ paddingTop: "20px" }} variant="h5">Add Note</Typography>
+          <Typography sx={{ paddingTop: "20px", color:"#e74c3c" }} variant="h5">Add Note</Typography>
           <TextField
             label="Note Title"
             variant="outlined"
@@ -110,12 +115,30 @@ const Notes = () => {
           <Button variant="contained" color="primary" sx={{ marginTop: "20px", width: "50%", marginBottom: "20px" }} onClick={handleCreateNote}>
             Add Note
           </Button>
+
+         <div> <Button
+            color="primary"
+            onClick={handleLogout}
+            sx={{
+              width:"50%",
+              fontWeight: "bold",
+              fontSize: "16px",
+              marginBottom:"20px",
+              backgroundColor:"#ed7669",
+              textTransform: "none", // Prevent uppercase transformation
+              "&:hover": {
+                backgroundColor: "#e74c3c", // Custom hover color
+              },
+            }}
+          >
+            Logout
+          </Button></div>
         </Paper>
       </Grid>
-      
+
       <Grid item xs={12} md={6}>
         <Paper sx={{ width: "95%", height: "90vh", marginLeft: "20px", overflowY: "auto" }}>
-          <Typography sx={{ textAlign: "center", paddingTop: "20px" }} variant="h5">Notes List</Typography>
+          <Typography sx={{ textAlign: "center", paddingTop: "20px",color:"#e74c3c" }} variant="h5">Notes List</Typography>
           <div>
             {isSuccess ? userNotes?.map((note) => (
               <Card key={note.id} style={{ margin: '10px' }}>
@@ -153,7 +176,6 @@ const Notes = () => {
           </div>
         </Paper>
       </Grid>
-
     </Grid>
   );
 };
