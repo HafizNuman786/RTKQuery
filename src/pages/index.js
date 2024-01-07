@@ -113,15 +113,17 @@ const LoginPage = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+      
       }}
       container
       justifyContent="center"
       alignItems="center"
+      
     >
       <ToastContainer />
       <Paper
         elevation={5}
-        style={{ padding: "20px", width: 600, textAlign: "center" }}
+        style={{ padding: "20px", width: 600, textAlign: "center", borderTop:"5px solid #e74c3c"}}
       >
          <Typography variant="h4" sx={{ mt: 2, color: "#e74c3c", fontWeight:"bold"}}>
           STICKY
@@ -181,3 +183,6 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+
+

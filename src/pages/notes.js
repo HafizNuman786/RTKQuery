@@ -81,18 +81,19 @@ const Notes = () => {
   return (
     <Grid container spacing={2}
       sx={{
-        width: '100vw',
-        height: '100vh',
+        width: '99vw',
         backgroundImage: 'url("/ntsticky.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         padding: '20px',
+        
+        
 
       }}
     >
 
       <Grid item xs={12} md={6} >
-        <Paper sx={{ textAlign: "center", width: "100%", marginLeft: "20px" }}>
+        <Paper sx={{ textAlign: "center", width: "100%", marginLeft: "20px" ,borderTop:"5px solid #e74c3c" }}>
           <Typography sx={{ paddingTop: "20px", color:"#e74c3c" }} variant="h5">Add Note</Typography>
           <TextField
             label="Note Title"
@@ -137,11 +138,11 @@ const Notes = () => {
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <Paper sx={{ width: "95%", height: "90vh", marginLeft: "20px", overflowY: "auto" }}>
+        <Paper sx={{ width: "95%", height: "90vh", marginLeft: "20px", overflowY: "auto",borderTop:"5px solid #e74c3c" }}>
           <Typography sx={{ textAlign: "center", paddingTop: "20px",color:"#e74c3c" }} variant="h5">Notes List</Typography>
           <div>
             {isSuccess ? userNotes?.map((note) => (
-              <Card key={note.id} style={{ margin: '10px' }}>
+              <Card key={note.id} style={{ margin: '10px', borderLeft:"1px solid #e74c3c",borderRight:"1px solid #e74c3c" }}>
                 <CardContent>
                   <Typography variant="h6">{note.heading}</Typography>
                   <Typography>{note.description}</Typography>

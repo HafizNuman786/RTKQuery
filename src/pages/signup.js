@@ -128,12 +128,12 @@ const Signup = () => {
       <ToastContainer />
       <Paper
         elevation={5}
-        style={{ padding: "20px", width: 500, textAlign: "center" }}
+        style={{ padding: "20px", width: 500,height:"90%", textAlign: "center",borderTop:"5px solid #e74c3c" }}
       >
-        <Typography variant="h4" sx={{ mt: 2, color: "#e74c3c", fontWeight:"bold"}}>
+        <Typography variant="h4" sx={{ mt: 1, color: "#e74c3c", fontWeight:"bold"}}>
           STICKY
         </Typography>
-        <Typography variant="h6" sx={{ mt: 2, color: "#e74c3c" }}>
+        <Typography variant="h6" sx={{ mt: 1, color: "#e74c3c" }}>
            Sign Up
         </Typography>
         {/* Textfield for First Name */}
@@ -216,7 +216,7 @@ const Signup = () => {
           variant="contained"
           color="primary"
           onClick={handleSignup}
-          style={{ marginTop: "20px", width: "50%" }}
+          style={{ marginTop: "10px", width: "50%" }}
         >
           Signup
         </Button>
