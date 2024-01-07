@@ -84,13 +84,13 @@ const LoginPage = () => {
       const isValidPassword = userWithEmail.password === password;
 
       if (isValidPassword) {
-        // Reset form, clear errors, navigate to notes page, and show success toast
+        // Reset form clear errors navigate to notes page and show success toast
         setEmail("");
         setPassword("");
         setEmailError(false);
         setPasswordError(false);
 
-        // Show toast only if it hasn't been shown before
+        // Show toast only if it hasnt been shown before
         if (!notificationShown) {
           successful(); // Show success toast
           setNotificationShown(true);

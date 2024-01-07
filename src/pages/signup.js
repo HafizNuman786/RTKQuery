@@ -102,7 +102,7 @@ const Signup = () => {
 
       // Reset form and navigate to the notes page
       resetForm();
-      router.push("/notes");
+      router.push("/");
     } catch (error) {
       // Show error toast and log the error
       failed();
